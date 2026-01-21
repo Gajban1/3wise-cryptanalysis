@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multivariate Crypto Explorer</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="scanlines"></div>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">◈</span>
+                <h1>3WISE<span class="accent">BREAKER</span></h1>
+            </div>
+            <div class="status-bar">
+                <span class="status-item"><span class="dot online"></span> SageMath v10.8</span>
+                <span class="status-item"><span class="dot"></span> GF(257)</span>
+                <span class="status-item" id="clock">--:--:--</span>
+            </div>
+        </header>
+
+        <!-- Main Grid -->
+        <main class="main-grid">
+            <!-- Encryption Panel -->
+            <section class="panel encrypt-panel">
+                <div class="panel-header">
+                    <span class="panel-icon"></span>
+                    <h2>ENCRYPT</h2>
+                </div>
+                <div class="panel-content">
+                    <label for="cipherName">Nazwa (opcjonalna):</label>
+                    <div class="input-group name-input">
+                        <input type="text" id="cipherName" placeholder="np. Nazwa serwisu hasła" maxlength="30"
+                            autocomplete="off">
+                    </div>
+                    <label for="plaintext">Wiadomość (1-50 znaków):</label>
+                    <div class="input-group">
+                        <textarea id="plaintext" placeholder="Wpisz wiadomość..." maxlength="50" autocomplete="off"
+                            rows="1"></textarea>
+                        <button id="encryptBtn" class="btn btn-primary">
+                            <span class="btn-text">ENCODE</span>
+                            <span class="btn-loader"></span>
+                        </button>
+                    </div>
+                    <div class="result-box" id="encryptResult">
+                        <div class="placeholder">Wynik szyfrowania pojawi się tutaj...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Public Key Visualizer -->
+            <section class="panel pubkey-panel">
+                <div class="panel-header">
+                    <span class="panel-icon"></span>
+                    <h2>PUBLIC KEY</h2>
+                </div>
+                <div class="panel-content">
+                    <div class="polynomial-display" id="polynomialDisplay">
+                        <div class="placeholder">Wielomiany klucza publicznego...</div>
+                    </div>
+                    <div class="key-stats" id="keyStats">
+                        <div class="stat">
+                            <span class="stat-label">N</span>
+                            <span class="stat-value" id="statN">-</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Q</span>
+                            <span class="stat-value" id="statQ">-</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Polynomials</span>
+                            <span class="stat-value" id="statPoly">-</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Saved Ciphers Panel -->
+            <section class="panel ciphers-panel">
+                <div class="panel-header">
+                    <span class="panel-icon"></span>
+                    <h2>SAVED CIPHERS</h2>
+                    <button id="refreshCiphersBtn" class="btn btn-small">REFRESH</button>
+                </div>
+                <div class="panel-content">
+                    <div class="cipher-list" id="cipherList">
+                        <div class="placeholder">Brak zapisanych szyfrogramów...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attack Console -->
+            <section class="panel attack-panel">
+                <div class="panel-header">
+                    <span class="panel-icon"></span>
+                    <h2>MINRANK ATTACK</h2>
+                    <button id="solveBtn" class="btn btn-danger" disabled>
+                        <span class="btn-text">DECODE</span>
+                        <span class="btn-loader"></span>
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <div class="console" id="attackConsole">
+                        <div class="console-line">[SYSTEM] Oczekiwanie na szyfrogram...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Result Panel -->
+            <section class="panel result-panel">
+                <div class="panel-header">
+                    <span class="panel-icon"></span>
+                    <h2>DECRYPTED</h2>
+                </div>
+                <div class="panel-content">
+                    <div class="decrypted-message" id="decryptedMessage">
+                        <span class="waiting">Waiting for attack...</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Multivariate Polynomial Cryptosystem • MinRank Attack Demo • Kryptografia 2026</p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>
