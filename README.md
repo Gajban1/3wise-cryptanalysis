@@ -131,9 +131,12 @@ curl -X POST http://localhost:8000/decrypt \
 
 ## Źródła i literatura
 
-1. Kipnis, A., Shamir, A. (1999). *Cryptanalysis of the HFE Public Key Cryptosystem*
-2. Faugère, J.C., Levy-dit-Vehel, F., Perret, L. (2008). *Cryptanalysis of MinRank*
-3. Notatki z wykładów - Kryptografia, semestr zimowy 2025/26
+1. D. Smith-Tone. *"[A Total Break of the 3WISE Digital Signature Scheme](https://eprint.iacr.org/2023/1535.pdf)"* . National Institute of Standards and Technology, 2023.
+2. B. Gómez Rodríguez. *"[3WISE: Cubic Element-Wise trapdoor based MPKC cryptosystem](http://rfc.nop.hu/nist/3wise-spec-web.pdf)"* . Specyfikacja dla NIST, 31 maja 2023.
+3. N. T. Courtois. *"[Kryptografia wielu zmiennych](http://www.minrank.org/kurs.pdf)"* . Materiały z konferencji Enigma 2000, Warszawa.
+4. Kipnis A., Shamir A. *"[Cryptanalysis of the HFE Public Key Cryptosystem](http://www.minrank.org/hfesubreg.pdf)"* . 1999.
+5. Faugère J.C., Levy-dit-Vehel F., Perret L. *"[Cryptanalysis of MinRank](https://link.springer.com/chapter/10.1007/978-3-540-85174-5_16)"* . 2008
+6. Notatki z wykładów - Kryptografia, semestr zimowy 2025/26
 
 ---
 
