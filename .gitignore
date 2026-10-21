@@ -2,3 +2,9 @@ __pycache__/
 venv/
 .DS_Store 
 *.sage.py
+.venv/
+.env
+.env.*
+__pycache__/
+*.pyc
+.pytest_cache/

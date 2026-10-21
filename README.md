@@ -1,166 +1,47 @@
-# 3WiseBreaker - Multivariate Crypto Explorer
+# 3WiseBreaker — Multivariate Cryptography Demonstrator
 
-> **Projekt zaliczeniowy z przedmiotu Kryptografia**  
-> Semestr zimowy 2025/26
+Educational SageMath implementation of a cubic multivariate encryption demonstrator and a MinRank-based plaintext-recovery attack, with a FastAPI backend and web interface.
 
----
+## My contribution
 
-## Opis projektu
+**Piotr Straszak:** implementation of the cryptographic core in SageMath and adjustment of message block sizes to balance encryption and attack runtime. Teammates developed the visual web interface. The project draws on published cryptanalysis and a CTF-inspired concept; it is not a claim of a newly discovered vulnerability.
 
-Interaktywna aplikacja webowa demonstrująca **kryptoanalyzę wielomianowych systemów szyfrujących**. Projekt pokazuje praktyczną podatność kryptosystemów opartych na wielomianach sześciennych na atak MinRank.
+**Original team:** Piotr Straszak, Bartłomiej Ząbek, Kamil Szkarłat, Jakub Szkaradek, Paweł Lorenc. Original repository: [pawelorenc/Kryptosystem-3WISE](https://github.com/pawelorenc/Kryptosystem-3WISE). Original Git history is preserved.
 
-### Czym jest atak MinRank?
+## Technical highlights
 
-Atak MinRank to technika kryptoanalityczna wykorzystująca fakt, że wielomiany klucza publicznego można przedstawić jako kombinacje liniowe macierzy pierwszego rzędu. Pozwala to na odzyskanie klucza prywatnego (lub bezpośrednio plaintextu) w czasie wielomianowym.
+- Cubic polynomial transformations over GF(257).
+- SageMath finite-field, polynomial and matrix computations.
+- Hessian projections and rank-one structure recovery in the attack implementation.
+- Block-wise message handling, padding and plaintext reconstruction.
+- FastAPI endpoints connecting the demonstrator to a browser UI.
 
-### Jak działa nasza aplikacja?
+## Run locally
 
-1. **Szyfrowanie** - użytkownik wpisuje wiadomość, która jest szyfrowana przy użyciu losowo wygenerowanego klucza publicznego (wielomiany sześcienne nad GF(257))
-2. **Atak** - aplikacja przeprowadza atak MinRank, szukając bazy podprzestrzeni macierzy rangi 1
-3. **Deszyfrowanie** - po znalezieniu bazy, wiadomość jest odszyfrowywana przez rozwiązanie układu równań liniowych
-
----
-
-## Struktura projektu
-
-```
-projekt/
-├── app/
-│   ├── backend/
-│   │   ├── main.py           # Serwer FastAPI - obsługuje endpointy API
-│   │   ├── crypto_engine.py  # Wrapper do SageMath - odpala skrypty sage
-│   │   └── requirements.txt  # Zależności Pythona
-│   └── frontend/
-│       ├── index.html        # Strona główna dashboardu
-│       ├── styles.css        # Style CSS
-│       └── app.js            # Logika frontendu 
-├── encryptor_api.sage        # Skrypt szyfrujący (SageMath)
-├── solver_api.sage           # Skrypt ataku MinRank (SageMath)
-└── README.md                 
-```
-
----
-
-## Wymagania
-
-| Narzędzie | Wersja | Uwagi |
-|-----------|--------|-------|
-| Python | 3.10+ | Testowane na 3.11 |
-| SageMath | 10.x | Musi być dostępny jako `sage` w PATH |
-| Przeglądarka | Bieżąca | Chrome, Firefox, Safari |
-
-### Instalacja zależności
+Requirements: Python 3.10+ and SageMath 10.x, with `sage` on PATH.
 
 ```bash
-cd projekt/app/backend
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# lub: venv\Scripts\activate  # Windows
-
-pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r app/backend/requirements.txt
+cd app/backend
+python -m uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
----
+Open http://127.0.0.1:8000. Encrypt a short ASCII message and use the attack view to recover it. SageMath execution can take several seconds per block. No live application is hosted by this repository.
 
-## Uruchomienie
+## Scope and limitations
 
-```bash
-# 1. Aktywuj środowisko wirtualne
-cd projekt/app/backend
-source venv/bin/activate
+This is a **3WISE-inspired educational encryption construction**, not a complete implementation of the original digital-signature submission. The demonstrated plaintext recovery applies to this construction and its parameters. It reproduces a known attack idea rather than establishing a new break.
 
-# 2. Uruchom serwer (z hot-reload dla wygody)
-python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+The application is deliberately not a secure messaging product. Run it only on localhost with trusted demo inputs: the solver uses `sage_eval` on supplied expressions, there is no authentication or resource isolation, and execution can be computationally expensive. Never expose the API to untrusted users. Ciphertexts are held in memory and disappear on restart. Message support is limited to ASCII. No end-to-end SageMath execution is claimed unless recorded in validation notes.
 
-# 3. Otwórz w przeglądarce pod adresem: http://localhost:8000 
-```
+## References
 
-Serwer powinien wystartować i pokazać:
-```
-INFO:     Uvicorn running on http://0.0.0.0:8000
-INFO:     Started reloader process...
-```
+- D. Smith-Tone, [A Total Break of the 3WISE Digital Signature Scheme](https://eprint.iacr.org/2023/1535.pdf), 2023.
+- B. Gómez Rodríguez, *3WISE: Cubic Element-Wise trapdoor based MPKC cryptosystem*, 2023.
+- Additional references and the original academic documentation: [docs/original-README.md](docs/original-README.md).
 
----
+## Attribution and license
 
-## API Endpoints
-
-| Endpoint | Metoda | Opis |
-|----------|--------|------|
-| `/` | GET | Dashboard UI (strona główna) |
-| `/api` | GET | Informacje o API |
-| `/encrypt` | POST | Szyfruj wiadomość |
-| `/decrypt` | POST | Złam szyfr atakiem MinRank |
-| `/ciphers` | GET | Lista zapisanych szyfrogramów |
-| `/ciphers/{id}` | GET | Pobierz konkretny szyfrogram |
-| `/ciphers/{id}` | DELETE | Usuń szyfrogram |
-
-### Przykład użycia API (curl)
-
-```bash
-# Szyfrowanie
-curl -X POST http://localhost:8000/encrypt \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Tajne hasło!", "name": "Test"}'
-
-# Deszyfrowanie (użyj raw_content z poprzedniej odpowiedzi)
-curl -X POST http://localhost:8000/decrypt \
-  -H "Content-Type: application/json" \
-  -d '{"cipher_data": "..."}'
-```
-
----
-
-## Technologie
-
-| Warstwa | Technologia | Dlaczego? |
-|---------|-------------|-----------|
-| Backend | FastAPI | Szybki, nowoczesny framework Python |
-| Kryptografia | SageMath | Biblioteka do obliczeń algebraicznych |
-| Frontend | HTML/CSS/JS | Vanilla, bez frameworków |
-| Styl | CSS Custom Properties | Motyw cyberpunk z gradientami |
-
-### Parametry kryptograficzne
-
-- **Ciało skończone**: GF(257) - pierwsze q > 256, żeby pomieścić ASCII
-- **Wielomiany**: Sześcienne (stopień 3)
-- **Rozmiar bloku**: 20 znaków (n=20)
-- **Padding**: PKCS#7 dla dłuższych wiadomości
-
----
-
-## Źródła i literatura
-
-1. D. Smith-Tone. *"[A Total Break of the 3WISE Digital Signature Scheme](https://eprint.iacr.org/2023/1535.pdf)"* . National Institute of Standards and Technology, 2023.
-2. B. Gómez Rodríguez. *"[3WISE: Cubic Element-Wise trapdoor based MPKC cryptosystem](http://rfc.nop.hu/nist/3wise-spec-web.pdf)"* . Specyfikacja dla NIST, 31 maja 2023.
-3. N. T. Courtois. *"[Kryptografia wielu zmiennych](http://www.minrank.org/kurs.pdf)"* . Materiały z konferencji Enigma 2000, Warszawa.
-4. Kipnis A., Shamir A. *"[Cryptanalysis of the HFE Public Key Cryptosystem](http://www.minrank.org/hfesubreg.pdf)"* . 1999.
-5. Faugère J.C., Levy-dit-Vehel F., Perret L. *"[Cryptanalysis of MinRank](https://link.springer.com/chapter/10.1007/978-3-540-85174-5_16)"* . 2008
-6. Notatki z wykładów - Kryptografia, semestr zimowy 2025/26
-
----
-
-## Znane problemy
-
-- [ ] Szyfrowanie dłuższych wiadomości może trwać kilka sekund (każdy blok = osobne wywołanie SageMath)
-- [ ] Szyfrogramy są przechowywane w pamięci - znikają po restarcie serwera
-- [ ] Brak obsługi polskich znaków (tylko ASCII)
-
----
-
-## Autorzy
-- Piotr Straszak
-- Bartłomiej Ząbek
-- Kamil Szkarłat
-- Jakub Szkaradek
-- Paweł Lorenc
-
-
-
----
-
-Projekt wykonany w ramach przedmiotu **Kryptografia** na kierunku Cyberbezpieczeństwo.
-
----
-
-*Ostatnia aktualizacja: styczeń 2026*
+Original authors are credited above and in Git history. Upstream contains no license file; this portfolio copy does not add a license over the team's work.
